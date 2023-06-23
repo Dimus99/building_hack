@@ -1,0 +1,26 @@
+version: "3.2"
+
+services:
+  api:
+    ports:
+      - "80:80"
+    build:
+      context: ..
+      dockerfile: building_hack/backend/Dockerfile
+    environment:
+      FLASK_DEBUG: 1
+    command: flask run -h 0.0.0.0 -p 80
+
+  postgres:
+    image: postgres:14.1
+    environment:
+      LC_ALL: C.UTF-8
+      POSTGRES_DB: hack
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: pass
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        "max-size": "1m"
+        "max-file": "5"
