@@ -12,9 +12,6 @@ with open(name, mode='r') as file:
     csv_reader = csv.reader(file, delimiter=";")
 
     # Loop through each row in the CSV file
-    i = 0
-    # Skip the first row
-    # head = next(csv_reader)
     rows = []
     i = 0
     while True:
