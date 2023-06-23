@@ -2,7 +2,6 @@ FROM ubuntu:latest
 
 RUN apt-get update -y
 RUN apt-get install -y python3-pip python3-dev
-#RUN apt-get install unicorn -y # for fast-api
 
 
 ADD building_hack/backend/requirements.txt /requirements.txt

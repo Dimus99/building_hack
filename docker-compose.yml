@@ -5,7 +5,6 @@ services:
     build:
       context: ..
       dockerfile: building_hack/backend/Dockerfile
-#    container_name: fastapi-application
     environment:
       PORT: 8000
       FLASK_DEBUG: 1
@@ -15,17 +14,6 @@ services:
     command: uvicorn backend.app.main:app --host 0.0.0.0
     volumes:
       - .:/app
-
-
-#    ports:
-#      - "8000:8000"
-#    build:
-#      context: ..
-#      dockerfile: building_hack/backend/Dockerfile
-#    environment:
-#      FLASK_DEBUG: 1
-#    command: uvicorn app.main:app, --proxy-headers --host 0.0.0.0 --port 80
-
 
   postgres:
     image: postgres:14.1
