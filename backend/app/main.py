@@ -4,6 +4,7 @@ from fastapi import FastAPI, UploadFile, File
 import pandas as pd
 
 from .core.config import settings
+from .utils import merge_with_attr, predict
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -20,6 +21,7 @@ def read_root():
 async def predict_by_file(file: UploadFile = File(...)):
     """
     Принимает файл xls/xlsx или csv и возвращает предсказание
+    Возвращает список отклонений от дат завершения работ
     """
     content = await file.read()
     if file.filename.endswith('.csv'):
@@ -34,10 +36,13 @@ async def predict_by_file(file: UploadFile = File(...)):
             return {"error": f"bad excel file: \n {e}"}
     else:
         return {"error": "Unsupported file format"}
+    try:
+        df = merge_with_attr(df)
+    except Exception as e:
+        return {"error": str(e)}
+    result = predict(df)
 
-    # use ML
-
-    return {"filename": file.filename, "dataframe": df.to_dict(orient='records')}
+    return {"predict": result}
 
 
 @app.post("/update_attr/")
