@@ -46,10 +46,9 @@ async def predict_by_file(file: UploadFile = File(...)):
         return {"error": "Unsupported file format"}
     try:
         result = predict(df)
-        print(result)
     except Exception as e:
         return {"error": f"can't predict: {e}"}
-    return {"predict": 0}
+    return {"predict": result}
 
 
 @app.post("/predict/")

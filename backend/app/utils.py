@@ -48,27 +48,25 @@ def predict(df):
     le = LabelEncoder()
     df["Кодзадачи"] = df["Кодзадачи"].astype("str")
     for col in le_columns:
-        print(col)
+        # print(col)
         le.classes_ = np.load(f"backend/app/data_files/{col}_calsses.npy", allow_pickle=True)
         df[col] = le.transform(df[col])
-    print(1)
+
     df["month_start"] = df["ДатаНачалаЗадачи"].apply(lambda x: x.month)
     df["season_start"] = df["ДатаНачалаЗадачи"].apply(lambda x: get_season(x))
-    print(2)
+
     df["bp_date_month_start"] = df["ДатаначалаБП0"].apply(lambda x: x.month)
     df["bp_date_season_start"] = df["ДатаначалаБП0"].apply(lambda x: get_season(x))
-    print(3)
+
     df["bp_date_month_end"] = df["ДатаокончанияБП0"].apply(lambda x: x.month)
     df["bp_date_season_end"] = df["ДатаокончанияБП0"].apply(lambda x: get_season(x))
-    print(4)
+
     model = xgboost.XGBRegressor()
     model.load_model("backend/app/data_files/w.json")
-    print(5)
 
     result = model.predict(df[model.feature_names_in_])
-    print(6, result)
 
-    return result
+    return result.tolist()
 
 
 def get_season(date):
