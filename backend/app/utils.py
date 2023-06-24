@@ -1,4 +1,7 @@
+import numpy as np
 import pandas as pd
+import xgboost
+from sklearn.preprocessing import LabelEncoder
 
 
 def merge_with_attr(dataset):
@@ -17,6 +20,58 @@ def merge_with_attr(dataset):
 
 
 def predict(df):
-    # df = merge_with_attr(df)
-    # make shuga-shuga bachi-bachi
-    return [15] *len(df)
+    df = merge_with_attr(df)
+    date_cols = [
+        'ДатаНачалаЗадачи',
+        'ДатаОкончанияЗадачи',
+        'ДатаначалаБП0',
+        'ДатаокончанияБП0',
+        'date_report'
+    ]
+    for date_col in date_cols:
+        df[date_col] = pd.to_datetime(df[date_col])
+
+    le_columns = [
+        "obj_prg",
+        "obj_subprg",
+        "obj_key",
+        "Кодзадачи",
+        "НазваниеЗадачи",
+        "ПроцентЗавершенияЗадачи",
+        "Экспертиза",
+        "состояние площадки",
+    ]
+
+    le = LabelEncoder()
+    df["Кодзадачи"] = df["Кодзадачи"].astype("str")
+    for col in le_columns:
+        print(col)
+        le.classes_ = np.load(f"building_hack/backend/app/data_files/{col}_calsses.npy", allow_pickle=True)
+        df[col] = le.transform(df[col])
+
+    df["month_start"] = df["ДатаНачалаЗадачи"].apply(lambda x: x.month)
+    df["season_start"] = df["ДатаНачалаЗадачи"].apply(lambda x: get_season(x))
+
+    df["bp_date_month_start"] = df["ДатаначалаБП0"].apply(lambda x: x.month)
+    df["bp_date_season_start"] = df["ДатаначалаБП0"].apply(lambda x: get_season(x))
+
+    df["bp_date_month_end"] = df["ДатаокончанияБП0"].apply(lambda x: x.month)
+    df["bp_date_season_end"] = df["ДатаокончанияБП0"].apply(lambda x: get_season(x))
+
+    model = xgboost.XGBRegressor()
+    model.load_model("building_hack/backend/app/data_files/w.json")
+
+    result = model.predict(df[model.feature_names_in_])
+
+    return list(result)
+
+
+def get_season(date):
+    if date.month in [12, 1, 2]:
+        return 0
+    elif date.month in [3, 4, 5]:
+        return 1
+    elif date.month in [6, 7, 8]:
+        return 2
+    else:
+        return 3

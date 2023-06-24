@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
 from .core.config import settings
-from .utils import merge_with_attr, predict
+from .utils import predict
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -57,22 +57,25 @@ async def predict_by_fields(data):
     Принимает json c полями
     Возвращает отклонение от даты окончания
     """
-    vars = [
-        'obj_prg',
-        'obj_subprg',
-        'obj_key',
-        'task_code',
-        'task_name',
-        'task_completion',
-        'task_start_date',
-        'task_end_date',
-        'bp_start_date',
-        'bp_end_date',
-        'status_expertise',
-        'expertise',
-        'date_report'
-    ]
-    df = pd.DataFrame(data=[data], columns=vars)
+    vars = {
+        'obj_prg': "obj_prg",
+        'obj_subprg': "obj_subprg",
+        'obj_key': "obj_key",
+        'task_code': "Кодзадачи",
+        'task_name': "НазваниеЗадачи",
+        'task_completion': "ПроцентЗавершенияЗадачи",
+        'task_start_date': "ДатаНачалаЗадачи",
+        'task_end_date': "ДатаОкончанияЗадачи",
+        'bp_start_date': "ДатаначалаБП0",
+        'bp_end_date': "ДатаокончанияБП0",
+        'status_expertise': "Статуспоэкспертизе",
+        'expertise': "Экспертиза",
+        'date_report': "date_report"
+    }
+    l = {}
+    for k in vars:
+        l[vars[k]] = [data[k]]
+    df = pd.DataFrame.from_dict(l)
 
     try:
         result = predict(df)
