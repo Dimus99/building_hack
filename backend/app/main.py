@@ -49,7 +49,7 @@ async def predict_by_file(file: UploadFile = File(...)):
         print(result)
     except Exception as e:
         return {"error": f"can't predict: {e}"}
-    return {"predict": result}
+    return {"predict": 0}
 
 
 @app.post("/predict/")
