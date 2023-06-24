@@ -3,6 +3,7 @@ import io
 
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+import numpy as np
 import pandas as pd
 
 from .core.config import settings
@@ -20,7 +21,21 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"],
                    )
 
-
+vars = {
+    'obj_prg': "obj_prg",
+    'obj_subprg': "obj_subprg",
+    'obj_key': "obj_key",
+    'task_code': "Кодзадачи",
+    'task_name': "НазваниеЗадачи",
+    'task_completion': "ПроцентЗавершенияЗадачи",
+    'task_start_date': "ДатаНачалаЗадачи",
+    'task_end_date': "ДатаОкончанияЗадачи",
+    'bp_start_date': "ДатаначалаБП0",
+    'bp_end_date': "ДатаокончанияБП0",
+    'status_expertise': "Статуспоэкспертизе",
+    'expertise': "Экспертиза",
+    'date_report': "date_report"
+}
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -45,14 +60,22 @@ async def predict_by_file(file: UploadFile = File(...)):
             return {"error": f"bad excel file: \n {e}"}
     else:
         return {"error": "Unsupported file format"}
+
+    for column in vars.values():
+        if column == "date_report":
+            continue
+        if column not in df:
+            return {"error": f"Missed column {v}"}
     try:
         result = predict(df)
         print(df.head(), "ДатаОкончанияЗадачи" in df)
         for i, date in enumerate(df["ДатаОкончанияЗадачи"]):
             for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d"]:
                 try:
-                    result[i] = str(datetime.datetime.strptime(date, format).date() + datetime.timedelta(days=result[i]))
-                except: pass
+                    result[i] = str(
+                        datetime.datetime.strptime(date, format).date() + datetime.timedelta(days=result[i]))
+                except:
+                    pass
                 break
     except Exception as e:
         return {"error": f"can't predict: {e}"}
@@ -60,36 +83,32 @@ async def predict_by_file(file: UploadFile = File(...)):
 
 
 @app.post("/predict/")
-async def predict_by_fields(data):
+async def predict_by_fields(data: dict = {}):
     """
     Принимает json c полями
     Возвращает отклонение от даты окончания
     """
-    vars = {
-        'obj_prg': "obj_prg",
-        'obj_subprg': "obj_subprg",
-        'obj_key': "obj_key",
-        'task_code': "Кодзадачи",
-        'task_name': "НазваниеЗадачи",
-        'task_completion': "ПроцентЗавершенияЗадачи",
-        'task_start_date': "ДатаНачалаЗадачи",
-        'task_end_date': "ДатаОкончанияЗадачи",
-        'bp_start_date': "ДатаначалаБП0",
-        'bp_end_date': "ДатаокончанияБП0",
-        'status_expertise': "Статуспоэкспертизе",
-        'expertise': "Экспертиза",
-        'date_report': "date_report"
-    }
+
     l = {}
     for k in vars:
-        l[vars[k]] = [data[k]]
+        if k in data:
+            l[vars[k]] = [data[k]] if data[k] is not None else np.nan
+        else:
+            return {"error": f"Miss field {k}"}
+
     df = pd.DataFrame.from_dict(l)
 
     try:
         result = predict(df)
     except Exception as e:
         return {"error": f"can't predict: {e}"}
-
+    for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d"]:
+        try:
+            result = str(
+                datetime.datetime.strptime(df["ДатаОкончанияЗадачи"], format).date() + datetime.timedelta(days=result))
+        except:
+            pass
+        break
     return {"predict": result}
 
 
