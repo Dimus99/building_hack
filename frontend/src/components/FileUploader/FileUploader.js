@@ -1,37 +1,58 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import '../../App.css';
 
-const FileUploader = () => {
+const FileUpload = () => {
   const [file, setFile] = useState(null);
-  const [filename, setFilename] = useState('');
 
-  const onChange = (e) => {
-    setFile(e.target.files[0]);
-    setFilename(e.target.files[0].name);
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const handleFileRemove = () => {
+    setFile(null);
+  };
+
+  const handleFileUpload = async () => {
+    if (!file) return;
+
     const formData = new FormData();
     formData.append('file', file);
-    const response = await axios.post('API_URL', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    console.log(response.data);
+
+    try {
+      const response = await axios.post('/uploadfile/', formData);
+    } catch (error) {
+    }
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <br/>
-      <div>
-        <input type="file" onChange={onChange} />
-      </div>
-      <br/>
-      <div>
-        <button type="submit">Upload</button>
-      </div>
-    </form>
+    <div className='file-uploader'>
+      <label htmlFor="file-upload" className="custom-file-upload">
+        Select File
+      </label>
+      <input id="file-upload" type="file" onChange={handleFileChange} />
+
+      {file && (
+        <div>
+          <span>{file.name}</span>
+          <span style={{
+            display: "inline-block",
+            marginLeft: "10px",
+            marginTop: "10px",
+            marginBottom: "10px",
+            cursor: "pointer",
+            border: "1px solid black",
+            borderRadius: "50px",
+            width: "22px",
+            height: "22px",
+            backgroundColor: "#ff8888",
+          }} onClick={handleFileRemove}>x</span>
+        </div>
+      )}
+
+      <button className={`${!file && "button__disabled"}`} onClick={handleFileUpload}>Рассчитать срок</button>
+    </div>
   );
 };
 
-export default FileUploader;
+export default FileUpload;
