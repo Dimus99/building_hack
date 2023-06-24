@@ -9,6 +9,11 @@ from .utils import merge_with_attr, predict
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    headers=[
+        ("Access-Control-Allow-Origin", "*"),
+        ("Access-Control-Allow-Headers", "*"),
+        ("Access-Control-Allow-Methods", "*"),
+    ]
 )
 
 
