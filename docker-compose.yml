@@ -7,7 +7,7 @@ services:
       dockerfile: building_hack/backend/Dockerfile
     environment:
       PORT: 8000
-      FLASK_DEBUG: 1
+      FLASK_DEBUG: 0
       PROJECT_NAME: "backend"
     ports:
       - '8000:8000'
@@ -28,3 +28,10 @@ services:
       options:
         "max-size": "1m"
         "max-file": "5"
+  frontend:
+    build:
+      context: ..
+      dockerfile: building_hack/frontend/Dockerfile
+    ports:
+      - '80:3000'
+    command: npm start
