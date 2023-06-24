@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 
 
 def merge_with_attr(dataset):
-    attr_path = "building_hack/backend/attr.csv"
+    attr_path = "./attr.csv"
     try:
         attr = pd.read_csv(attr_path, delimiter=";", on_bad_lines="skip")
         dataset['date_report'] = pd.to_datetime(
@@ -13,8 +13,8 @@ def merge_with_attr(dataset):
         attr['date_report'] = pd.to_datetime(attr['date_report'])
 
         return pd.merge_asof(dataset, attr, on="date_report", by="obj_key")
-    except FileNotFoundError:
-        raise ValueError("Need attr.csv file for predict")
+    except FileNotFoundError as e:
+        raise ValueError(f"Need attr.csv file for predict: {e}")
     except Exception as e:
         raise ValueError(f"Error with merging: {e}")
 
