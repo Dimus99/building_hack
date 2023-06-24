@@ -35,11 +35,11 @@ const InputForm = () => {
   ]
 
   const validateForms = () => {
-    if (obj_prg && obj_subprg && obj_key && task_code && task_name && task_completion && task_start_date && task_end_date && bp_start_date && bp_end_date && status_expertise && expertise && date_report) {
-      setIsFormsFilled(true);
-    } else {
-      setIsFormsFilled(false);
-    }
+    setIsFormsFilled(Boolean(
+      obj_prg && obj_subprg && obj_key && task_code && task_name && task_completion
+      && task_start_date && task_end_date && bp_start_date && bp_end_date && status_expertise
+      && expertise && date_report
+    ))
   }
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const InputForm = () => {
           <input type="text" value={date_report} onChange={(e) => setDateReport(e.target.value)}/>
         </div>
       </form>
-        <button className={`${!isFormsFilled && "button__disabled"}`}>Рассчитать срок</button>
+      <button className={`${!isFormsFilled && "button__disabled"}`}>Рассчитать срок</button>
 
     </div>
   );

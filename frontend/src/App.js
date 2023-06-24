@@ -10,10 +10,10 @@ function App() {
   return (
     <div className="App">
       <div className='tabs'>
-          <div className={`tab ${!isUploadFileView ? 'tab__active' : 'off'}`} onClick={() => setIsUploadFileView(false)}>
+          <div className={`tab ${!isUploadFileView ? 'tab__active' : ''}`} onClick={() => setIsUploadFileView(false)}>
             Ручной ввод
           </div>
-          <div className={`tab ${isUploadFileView ? 'tab__active' : 'off'}`} onClick={() => setIsUploadFileView(true)}>
+          <div className={`tab ${isUploadFileView ? 'tab__active' : ''}`} onClick={() => setIsUploadFileView(true)}>
             Загрузка Excel файла
           </div>
         </div>

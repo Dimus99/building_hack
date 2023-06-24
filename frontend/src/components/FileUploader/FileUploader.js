@@ -20,7 +20,8 @@ const FileUpload = () => {
     formData.append('file', file);
 
     try {
-      const response = await axios.post('/uploadfile/', formData);
+      const response = await axios.post('http://localhost:8000/uploadfile/', formData);
+      console.log(response.data)
     } catch (error) {
     }
   };
