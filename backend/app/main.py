@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import io
 
 from fastapi import FastAPI, UploadFile, File
@@ -48,7 +48,7 @@ async def predict_by_file(file: UploadFile = File(...)):
     try:
         result = predict(df)
         for i, date in enumerate(df["task_end_date"]):
-            result[i] = (pd.to_datetime(date) + pd.to_timedelta(result[i], unit="D")).strftime("%Y-%m-%d")
+            result[i] = str(datetime.datetime(date) + datetime.timedelta(days=result[i]))
     except Exception as e:
         return {"error": f"can't predict: {e}"}
     return {"predict": result}
