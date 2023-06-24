@@ -94,7 +94,7 @@ async def predict_by_fields(data: dict = {}):
     l = {}
     for k in vars:
         if k in data:
-            l[vars[k]] = [data[k]] if data[k] is not None else np.nan
+            l[vars[k]] = [data[k]] if data[k] is not None and data[k] != "" else np.nan
 
     df = pd.DataFrame.from_dict(l)
 

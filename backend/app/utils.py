@@ -10,6 +10,7 @@ def merge_with_attr(dataset):
         attr = pd.read_csv(attr_path, delimiter=",", on_bad_lines="skip")
         if "date_report" in dataset:
             dataset["date_report"] = dataset["date_report"].fillna("2023.06.05")
+            dataset["date_report"] = dataset["date_report"].replace("","2023.06.05")
             dataset['date_report'] = pd.to_datetime(
                 dataset['date_report'])
         else:
