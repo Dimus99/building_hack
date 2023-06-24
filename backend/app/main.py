@@ -104,6 +104,6 @@ async def update_attr(file: UploadFile = File(...)):
     else:
         return {"error": "Unsupported file format"}
 
-    df.to_csv("../attr.csv")
+    df.to_csv("building_hack/backend/attr.csv")
 
     return {"result": "updated"}

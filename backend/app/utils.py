@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 
 
 def merge_with_attr(dataset):
-    attr_path = "./data/attr.csv"
+    attr_path = "building_hack/backend/attr.csv"
     try:
         attr = pd.read_csv(attr_path, delimiter=";", on_bad_lines="skip")
         dataset['date_report'] = pd.to_datetime(
