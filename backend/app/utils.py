@@ -49,7 +49,7 @@ def predict(df):
     df["Кодзадачи"] = df["Кодзадачи"].astype("str")
     for col in le_columns:
         print(col)
-        le.classes_ = np.load(f"building_hack/backend/app/data_files/{col}_calsses.npy", allow_pickle=True)
+        le.classes_ = np.load(f"backend/app/data_files/{col}_calsses.npy", allow_pickle=True)
         df[col] = le.transform(df[col])
 
     df["month_start"] = df["ДатаНачалаЗадачи"].apply(lambda x: x.month)
@@ -62,7 +62,7 @@ def predict(df):
     df["bp_date_season_end"] = df["ДатаокончанияБП0"].apply(lambda x: get_season(x))
 
     model = xgboost.XGBRegressor()
-    model.load_model("building_hack/backend/app/data_files/w.json")
+    model.load_model("backend/app/data_files/w.json")
 
     result = model.predict(df[model.feature_names_in_])
 
