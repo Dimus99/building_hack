@@ -17,4 +17,6 @@ def merge_with_attr(dataset):
 
 
 def predict(df):
-    pass
+    # df = merge_with_attr(df)
+    # make shuga-shuga bachi-bachi
+    return [15] *len(df)

@@ -36,14 +36,10 @@ async def predict_by_file(file: UploadFile = File(...)):
             return {"error": f"bad excel file: \n {e}"}
     else:
         return {"error": "Unsupported file format"}
-
     try:
-        df = merge_with_attr(df)
+        result = predict(df)
     except Exception as e:
-        return {"error": str(e)}
-
-    result = predict(df)
-
+        return {"error": f"can't predict: {e}"}
     return {"predict": result}
 
 
@@ -68,15 +64,14 @@ async def predict_by_fields(data):
         'expertise',
         'date_report'
     ]
-    df = []
-    for name in vars:
-        v = data.get(name)
-        df.append(v)
+    df = pd.DataFrame(data=[data], columns=vars)
 
-    # predict by df
-    predict = 2  # example
+    try:
+        result = predict(df)
+    except Exception as e:
+        return {"error": f"can't predict: {e}"}
 
-    return {"predict": predict}
+    return {"predict": result}
 
 
 @app.post("/update_attr/")
