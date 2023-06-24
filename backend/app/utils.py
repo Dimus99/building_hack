@@ -16,7 +16,7 @@ def merge_with_attr(dataset):
         else:
             dataset['date_report'] = pd.to_datetime("2023.06.05")
         attr['date_report'] = pd.to_datetime(attr['date_report'])
-
+        dataset = dataset.sort_values("date_report")
         return pd.merge_asof(dataset, attr, on="date_report", by="obj_key")
     except FileNotFoundError as e:
         raise ValueError(f"Need attr.csv file for predict: {e.__repr__()}")
