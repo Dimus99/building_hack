@@ -61,10 +61,9 @@ def predict(df):
     model = xgboost.XGBRegressor()
     model.load_model("building_hack/backend/app/data_files/w.json")
 
-    model.predict(df[model.feature_names_in_])
+    result = model.predict(df[model.feature_names_in_])
 
-    # make shuga-shuga bachi-bachi
-    return [15] * len(df)
+    return list(result)
 
 
 def get_season(date):
