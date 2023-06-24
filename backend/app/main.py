@@ -70,7 +70,7 @@ async def predict_by_file(file: UploadFile = File(...)):
         result = predict(df)
         print(df.head(), "ДатаОкончанияЗадачи" in df)
         for i, date in enumerate(df["ДатаОкончанияЗадачи"]):
-            for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d"]:
+            for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d", "%d.%m.%Y"]:
                 try:
                     result[i] = (datetime.datetime.strptime(date, format).date() + datetime.timedelta(
                         days=result[i])).strftime(format)
@@ -102,7 +102,7 @@ async def predict_by_fields(data: dict = {}):
         result = predict(df)
     except Exception as e:
         return {"error": f"can't predict: {e}"}
-    for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d", "%d/%m/%y"]:
+    for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d", "%d/%m/%y", "%d.%m.%Y"]:
         try:
             res = (datetime.datetime.strptime(df["ДатаОкончанияЗадачи"][0], format).date() + datetime.timedelta(
                 days=result[0])).strftime(format)
