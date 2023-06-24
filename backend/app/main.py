@@ -18,6 +18,9 @@ def read_root():
 
 @app.post("/uploadfile/")
 async def predict_by_file(file: UploadFile = File(...)):
+    """
+    Принимает файл xls/xlsx или csv и возвращает предсказание
+    """
     content = await file.read()
     if file.filename.endswith('.csv'):
         try:
