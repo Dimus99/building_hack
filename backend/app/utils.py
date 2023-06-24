@@ -66,9 +66,9 @@ def predict(df):
     print(5)
 
     result = model.predict(df[model.feature_names_in_])
-    print(6)
+    print(6, result)
 
-    return list(result)
+    return result
 
 
 def get_season(date):
