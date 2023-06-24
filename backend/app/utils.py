@@ -8,7 +8,7 @@ def merge_with_attr(dataset):
     attr_path = "./attr.csv"
     try:
         attr = pd.read_csv(attr_path, delimiter=",", on_bad_lines="skip")
-        if "date_report" in dataset:
+        if "date_report" in dataset and dataset['date_report']:
             dataset['date_report'] = pd.to_datetime(
                 dataset['date_report'])
         else:
