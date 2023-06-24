@@ -7,20 +7,13 @@ from sklearn.preprocessing import LabelEncoder
 def merge_with_attr(dataset):
     attr_path = "./attr.csv"
     try:
-        print(1)
-        attr = pd.read_csv(attr_path, delimiter=";", on_bad_lines="skip")
+        attr = pd.read_csv(attr_path, delimiter=",", on_bad_lines="skip")
         if "date_report" in dataset:
-            print(2)
             dataset['date_report'] = pd.to_datetime(
                 dataset['date_report'])
-            print(3)
         else:
-            print(4)
             dataset['date_report'] = pd.to_datetime("2023.06.05")
-        print(4.5)
-        print(attr.head())
         attr['date_report'] = pd.to_datetime(attr['date_report'])
-        print(5)
 
         return pd.merge_asof(dataset, attr, on="date_report", by="obj_key")
     except FileNotFoundError as e:
