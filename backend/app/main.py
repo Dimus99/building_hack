@@ -4,6 +4,7 @@ from fastapi import FastAPI, UploadFile, File
 import pandas as pd
 
 from .core.config import settings
+from .utils import merge_with_attr, predict
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -18,6 +19,10 @@ def read_root():
 
 @app.post("/uploadfile/")
 async def predict_by_file(file: UploadFile = File(...)):
+    """
+    Принимает файл xls/xlsx или csv
+    Возвращает список отклонений от дат завершения работ
+    """
     content = await file.read()
     if file.filename.endswith('.csv'):
         try:
@@ -32,9 +37,46 @@ async def predict_by_file(file: UploadFile = File(...)):
     else:
         return {"error": "Unsupported file format"}
 
-    # use ML
+    try:
+        df = merge_with_attr(df)
+    except Exception as e:
+        return {"error": str(e)}
 
-    return {"filename": file.filename, "dataframe": df.to_dict(orient='records')}
+    result = predict(df)
+
+    return {"predict": result}
+
+
+@app.post("/predict/")
+async def predict_by_fields(data):
+    """
+    Принимает json c полями
+    Возвращает отклонение от даты окончания
+    """
+    vars = [
+        'obj_prg',
+        'obj_subprg',
+        'obj_key',
+        'task_code',
+        'task_name',
+        'task_completion',
+        'task_start_date',
+        'task_end_date',
+        'bp_start_date',
+        'bp_end_date',
+        'status_expertise',
+        'expertise',
+        'date_report'
+    ]
+    df = []
+    for name in vars:
+        v = data.get(name)
+        df.append(v)
+
+    # predict by df
+    predict = 2  # example
+
+    return {"predict": predict}
 
 
 @app.post("/update_attr/")

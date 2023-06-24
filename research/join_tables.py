@@ -1,10 +1,10 @@
 import pandas as pd
 
-dataset_path = "./data/dataset_big_v2.csv"
+dataset_path = "./data/test.xlsx"
 attr_path = "./data/attr_v2.csv"
 
 # Read the dataset and attribute files
-dataset = pd.read_csv(dataset_path, delimiter=";", on_bad_lines="skip")
+dataset = pd.read_excel(dataset_path)
 attr = pd.read_csv(attr_path, delimiter=";", on_bad_lines="skip")
 print(dataset.head())
 print(attr.head)
