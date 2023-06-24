@@ -75,8 +75,10 @@ async def predict_by_file(file: UploadFile = File(...)):
                     result[i] = str(
                         datetime.datetime.strptime(date, format).date() + datetime.timedelta(days=result[i]))
                 except:
-                    pass
+                    continue
                 break
+            else:
+                return {"error": f"Unsupported date format: {date}"}
     except Exception as e:
         return {"error": f"can't predict: {e}"}
     return {"predict": result}
@@ -102,14 +104,16 @@ async def predict_by_fields(data: dict = {}):
         result = predict(df)
     except Exception as e:
         return {"error": f"can't predict: {e}"}
-    for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d"]:
+    for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d", "%d/%m/%y"]:
         try:
-            result = str(
-                datetime.datetime.strptime(df["ДатаОкончанияЗадачи"], format).date() + datetime.timedelta(days=result))
-        except:
-            pass
+            res = str(
+                datetime.datetime.strptime(df["ДатаОкончанияЗадачи"][0], format).date() + datetime.timedelta(days=result[0]))
+        except Exception as e:
+            continue
         break
-    return {"predict": result}
+    else:
+        return {"error": f"Unsupported date format: {df['ДатаОкончанияЗадачи'][0]}"}
+    return {"predict": res}
 
 
 @app.post("/update_attr/")
