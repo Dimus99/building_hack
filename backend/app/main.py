@@ -1,6 +1,7 @@
 import io
 
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
 from .core.config import settings
@@ -9,12 +10,14 @@ from .utils import merge_with_attr, predict
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    headers=[
-        ("Access-Control-Allow-Origin", "*"),
-        ("Access-Control-Allow-Headers", "*"),
-        ("Access-Control-Allow-Methods", "*"),
-    ]
 )
+
+app.add_middleware(CORSMiddleware,
+                   allow_origins=["*"],
+                   allow_credentials=True,
+                   allow_methods=["*"],
+                   allow_headers=["*"],
+                   )
 
 
 @app.get("/")
