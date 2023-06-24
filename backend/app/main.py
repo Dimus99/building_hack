@@ -49,7 +49,11 @@ async def predict_by_file(file: UploadFile = File(...)):
         result = predict(df)
         print(df.head(), "ДатаОкончанияЗадачи" in df)
         for i, date in enumerate(df["ДатаОкончанияЗадачи"]):
-            result[i] = str(datetime.datetime(date) + datetime.timedelta(days=result[i]))
+            for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d"]:
+                try:
+                    result[i] = str(datetime.datetime.strptime(date, format).date() + datetime.timedelta(days=result[i]))
+                except: pass
+                break
     except Exception as e:
         return {"error": f"can't predict: {e}"}
     return {"predict": result}
