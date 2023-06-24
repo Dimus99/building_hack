@@ -20,9 +20,15 @@ def read_root():
 async def predict_by_file(file: UploadFile = File(...)):
     content = await file.read()
     if file.filename.endswith('.csv'):
-        df = pd.read_csv(io.StringIO(content.decode('utf-8')))
+        try:
+            df = pd.read_csv(io.StringIO(content.decode('utf-8')))
+        except Exception as e:
+            return {"error": f"bad csv file: \n{e}"}
     elif file.filename.endswith('.xlsx') or file.filename.endswith('.xls'):
-        df = pd.read_excel(io.BytesIO(content))
+        try:
+            df = pd.read_excel(io.BytesIO(content))
+        except Exception as e:
+            return {"error": f"bad excel file: \n {e}"}
     else:
         return {"error": "Unsupported file format"}
 
