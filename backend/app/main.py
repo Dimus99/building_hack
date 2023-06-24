@@ -47,8 +47,8 @@ async def predict_by_file(file: UploadFile = File(...)):
         return {"error": "Unsupported file format"}
     try:
         result = predict(df)
-        print(df.head(), "task_end_date" in df)
-        for i, date in enumerate(df["task_end_date"]):
+        print(df.head(), "ДатаОкончанияЗадачи" in df)
+        for i, date in enumerate(df["ДатаОкончанияЗадачи"]):
             result[i] = str(datetime.datetime(date) + datetime.timedelta(days=result[i]))
     except Exception as e:
         return {"error": f"can't predict: {e}"}
