@@ -18,7 +18,7 @@ def merge_with_attr(dataset):
             print(4)
             dataset['date_report'] = pd.to_datetime("2023.06.05")
         print(4.5)
-        print("date_report" in attr)
+        print(attr.head())
         attr['date_report'] = pd.to_datetime(attr['date_report'])
         print(5)
 
