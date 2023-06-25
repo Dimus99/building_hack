@@ -75,7 +75,7 @@ const InputForm = () => {
 
     const data = await response.json();
 
-    setPredicts(data.predict);
+    setPredicts(data || [])
     setIsLoading(false);
   }
 
@@ -121,7 +121,9 @@ const InputForm = () => {
         predicts?.map((predict, index) => {
           return (
             <div key={index}>
-              <p>Срок: {predict}</p>
+              <p>Название задачи: {predict.name}</p>
+              <p>Дата начала: {predict.task_start_date}</p>
+              <p>Дата окончания: {predict.predict}</p>
             </div>
           )
         })

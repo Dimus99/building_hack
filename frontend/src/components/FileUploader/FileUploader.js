@@ -32,7 +32,7 @@ const FileUpload = () => {
         setError(response.data.error)
       }
 
-      setPredicts(response.data.predict)
+      setPredicts(response?.data || [])
     } catch (error) {
       setError(error.message)
     }
@@ -80,7 +80,9 @@ const FileUpload = () => {
         predicts ? predicts?.map((predict, index) => {
           return (
             <div key={index}>
-              <p>Срок: {predict}</p>
+              <p>Название задачи: {predict.name}</p>
+              <p>Дата начала: {predict.task_start_date}</p>
+              <p>Дата окончания: {predict.predict}</p>
             </div>
           )
         }) : <></>
