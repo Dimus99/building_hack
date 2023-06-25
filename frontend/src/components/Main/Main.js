@@ -50,6 +50,8 @@ const InputForm = () => {
   }, allFields)
 
   const getPredict = async () => {
+    if (!isFormsFilled) return;
+
     setIsLoading(true);
     const response = await fetch('http://goliaf-team.ru:8000/predict', {
       method: 'POST',
