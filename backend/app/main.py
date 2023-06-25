@@ -104,10 +104,12 @@ async def predict_by_fields(data: dict = {}):
         result = predict(df)
     except Exception as e:
         return {"error": f"can't predict: {e}"}
+    date = df["ДатаОкончанияЗадачи"][0]
+    date = str(date).split(" ")[0]
+
     for format in ["%d/%m/%Y", "%d%m%Y", "%Y.%m.%d", "%Y-%m-%d", "%d/%m/%y", "%d.%m.%Y", "%Y-%m-%d hh:mm:ss"]:
-        date = str(date).split(" ")[0]
         try:
-            res = (datetime.datetime.strptime(df["ДатаОкончанияЗадачи"][0], format).date() + datetime.timedelta(
+            res = (datetime.datetime.strptime(date, format).date() + datetime.timedelta(
                 days=result[0])).strftime(format)
         except:
             continue
