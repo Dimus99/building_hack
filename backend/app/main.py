@@ -78,7 +78,11 @@ async def predict_by_file(file: UploadFile = File(...)):
                 return {"error": f"Unsupported date format: {date}"}
     except Exception as e:
         return {"error": f"can't predict: {e}"}
-    return {"predict": result}
+    for i in range(len(result)):
+        result[i] = {"name": df["НазваниеЗадачи"][i],
+                     "task_start_date": df["ДатаНачалаЗадачи"][i],
+                     "predict": result[i]}
+    return result
 
 
 @app.post("/predict/")
