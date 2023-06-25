@@ -4,6 +4,8 @@ import '../../App.css'
 const InputForm = () => {
   const [isFormsFilled, setIsFormsFilled] = useState(false);
 
+  const [predicts, setPredicts] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [obj_prg, setObjPrg] = useState('');
@@ -72,7 +74,8 @@ const InputForm = () => {
     });
 
     const data = await response.json();
-    console.log(data);
+
+    setPredicts(data.predict);
     setIsLoading(false);
   }
 
@@ -113,6 +116,16 @@ const InputForm = () => {
         </div>
       </form>
       <button className={`${!isFormsFilled && "button__disabled"}`} onClick={getPredict}>Рассчитать срок</button>
+
+      {
+        predicts?.map((predict, index) => {
+          return (
+            <div key={index}>
+              <p>Срок: {predict}</p>
+            </div>
+          )
+        })
+      }
     </div>
   );
 };

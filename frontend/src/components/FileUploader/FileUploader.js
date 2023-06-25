@@ -7,6 +7,8 @@ const FileUpload = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [predicts, setPredicts] = useState([]);
+
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
@@ -26,10 +28,11 @@ const FileUpload = () => {
 
     try {
       const response = await axios.post('http://goliaf-team.ru:8000/uploadfile/', formData);
-      console.log(response.data)
       if (response.data?.error) {
         setError(response.data.error)
       }
+
+      setPredicts(response.data.predict)
     } catch (error) {
       setError(error.message)
     }
@@ -72,6 +75,17 @@ const FileUpload = () => {
       {
         error && <div style={{color: "red", paddingTop: "20px"}}>{error}</div>
       }
+
+      {
+        predicts ? predicts?.map((predict, index) => {
+          return (
+            <div key={index}>
+              <p>Срок: {predict}</p>
+            </div>
+          )
+        }) : <></>
+      }
+
     </div>
   );
 };
