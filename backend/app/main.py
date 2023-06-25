@@ -61,11 +61,6 @@ async def predict_by_file(file: UploadFile = File(...)):
     else:
         return {"error": "Unsupported file format"}
 
-    for column in vars.values():
-        if column == "date_report":
-            continue
-        if column not in df:
-            return {"error": f"Missed column {v}"}
     try:
         result = predict(df)
         print(df.head(), "ДатаОкончанияЗадачи" in df)
