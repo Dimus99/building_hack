@@ -30,9 +30,10 @@ const FileUpload = () => {
       const response = await axios.post('http://goliaf-team.ru:8000/uploadfile/', formData);
       if (response.data?.error) {
         setError(response.data.error)
+      } else {
+        setPredicts(response?.data || [])
       }
 
-      setPredicts(response?.data || [])
     } catch (error) {
       setError(error.message)
     }
