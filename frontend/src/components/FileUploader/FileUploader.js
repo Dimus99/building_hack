@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import '../../App.css';
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -16,22 +18,37 @@ const FileUpload = () => {
   const handleFileUpload = async () => {
     if (!file) return;
 
+    setError(null)
+
+    setIsLoading(true);
     const formData = new FormData();
     formData.append('file', file);
 
     try {
-      const response = await axios.post('http://localhost:8000/uploadfile/', formData);
+      const response = await axios.post('http://goliaf-team.ru:8000/uploadfile/', formData);
       console.log(response.data)
+      if (response.data?.error) {
+        setError(response.data.error)
+      }
     } catch (error) {
+      setError(error.message)
     }
+
+
+    setIsLoading(false)
+    setFile(null)
   };
+
+  if (isLoading) return (
+    <div>Loading...</div>
+  )
 
   return (
     <div className='file-uploader'>
       <label htmlFor="file-upload" className="custom-file-upload">
-        Select File
+        Excel файл
       </label>
-      <input id="file-upload" type="file" onChange={handleFileChange} />
+      <input id="file-upload" type="file" onChange={handleFileChange}/>
 
       {file && (
         <div>
@@ -52,6 +69,9 @@ const FileUpload = () => {
       )}
 
       <button className={`${!file && "button__disabled"}`} onClick={handleFileUpload}>Рассчитать срок</button>
+      {
+        error && <div style={{color: "red", paddingTop: "20px"}}>{error}</div>
+      }
     </div>
   );
 };

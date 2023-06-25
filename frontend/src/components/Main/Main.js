@@ -4,6 +4,8 @@ import '../../App.css'
 const InputForm = () => {
   const [isFormsFilled, setIsFormsFilled] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [obj_prg, setObjPrg] = useState('');
   const [obj_subprg, setObjSubprg] = useState('');
   const [obj_key, setObjKey] = useState('');
@@ -37,14 +39,42 @@ const InputForm = () => {
   const validateForms = () => {
     setIsFormsFilled(Boolean(
       obj_prg && obj_subprg && obj_key && task_code && task_name && task_completion
-      && task_start_date && task_end_date && bp_start_date && bp_end_date && status_expertise
-      && expertise && date_report
+      && task_start_date && task_end_date && bp_start_date && bp_end_date
     ))
   }
 
   useEffect(() => {
     validateForms();
   }, allFields)
+
+  const getPredict = async () => {
+    setIsLoading(true);
+    const response = await fetch('http://goliaf-team.ru:8000/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        obj_prg,
+        obj_subprg,
+        obj_key,
+        task_code,
+        task_name,
+        task_completion,
+        task_start_date,
+        task_end_date,
+        bp_start_date,
+        bp_end_date,
+        status_expertise,
+        expertise,
+        date_report
+      })
+    });
+
+    const data = await response.json();
+    console.log(data);
+    setIsLoading(false);
+  }
 
   return (
     <div>
@@ -82,8 +112,7 @@ const InputForm = () => {
           <input type="text" value={date_report} onChange={(e) => setDateReport(e.target.value)}/>
         </div>
       </form>
-      <button className={`${!isFormsFilled && "button__disabled"}`}>Рассчитать срок</button>
-
+      <button className={`${!isFormsFilled && "button__disabled"}`} onClick={getPredict}>Рассчитать срок</button>
     </div>
   );
 };
